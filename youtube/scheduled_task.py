@@ -1,14 +1,18 @@
+from datetime import datetime
 from sre_constants import SUCCESS
 from celery import shared_task
 from googleapiclient.discovery import build
 from isodate import parse_duration
-from youtube.models import YoutubeVideo
+from youtube.models import APIkey, YoutubeVideo
+from decouple import config
+
+API_KEY = config('API_KEY')
 
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 PREDEFINED_QUERY = "Cricket"
 
-API_KEY = "AIzaSyBkIua0rxsm_3eCD-CM5JKKDsq8el86rPg"
+# API_KEY = "AIzaSyBkIua0rxsm_3eCD-CM5JKKDsq8el86rPg"
 
 class GetYoutubeVides:
     def __init__(self, api_key):
@@ -67,9 +71,17 @@ class GetYoutubeVides:
 @shared_task(bind=True)
 def fetch_yt_videos(self):
     from youtube.models import APIkey
-    keys = APIkey.objects.filter(is_expired=False).order_by('added_on').first()
+    keys = APIkey.objects.filter(is_expired=False).order_by('added_on')
     if keys:
-        GetYoutubeVides(api_key=keys.api_key).google_api_videos()
+        for i in range(keys.count()):
+            featched_videos = GetYoutubeVides(api_key=keys[i].api_key).google_api_videos()
+            if not featched_videos:
+                api_obj = APIkey.objects.get(api_key=keys[i].api_key)
+                api_obj.expired_on = datetime.now()
+                api_obj.is_expired = True
+                api_obj.save()
+            else:
+                break
     else:
         print('Please register a valid API Key in DB')
         pass

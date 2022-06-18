@@ -11,23 +11,34 @@ PREDEFINED_QUERY = "Cricket"
 API_KEY = "AIzaSyBkIua0rxsm_3eCD-CM5JKKDsq8el86rPg"
 
 class GetYoutubeVides:
-    def google_api_videos(self, search=PREDEFINED_QUERY, api_key=API_KEY):
-        try:
-            famtube = build(YOUTUBE_API_SERVICE_NAME, 
+    def __init__(self, api_key):
+        self.famtube = build(YOUTUBE_API_SERVICE_NAME, 
                     YOUTUBE_API_VERSION, developerKey=api_key)
-            search_result = famtube.search().list(
-                                q = search, 
-                                part = 'snippet', maxResults=5, type='video',
-                                order='date', publishedAfter='2021-01-01T00:00:00Z'
-                            ).execute()
-            videos_ids = []
-            items_list = search_result.get('items', [])
+
+    def youtube_search(self, search, nextToken):
+        search_result = self.famtube.search().list(
+                    q = search, 
+                    part = 'snippet', maxResults=5, type='video',
+                    order='date', publishedAfter='2021-01-01T00:00:00Z',
+                    pageToken = nextToken
+                ).execute()
+        return search_result
+
+    def google_api_videos(self, search=PREDEFINED_QUERY):
+        items_list = []
+        try:
+            nextToken = None
+            for i in range(3):
+                search_result = self.youtube_search(search, nextToken)
+                nextToken = search_result.get('nextPageToken')
+                items_list.extend(search_result.get('items', []))
         except Exception:
             return False
+        videos_ids = list()
         if items_list:
             for item in items_list:
                 videos_ids.append(item['id']['videoId'])
-            videos_list = famtube.videos().list(id=videos_ids, part='snippet,contentDetails').execute()
+            videos_list = self.famtube.videos().list(id=videos_ids, part='snippet,contentDetails').execute()
             items_list = videos_list.get('items', [])
             for item in items_list:
                 video_id = item['id']
@@ -58,7 +69,7 @@ def fetch_yt_videos(self):
     from youtube.models import APIkey
     keys = APIkey.objects.filter(is_expired=False).order_by('added_on').first()
     if keys:
-        GetYoutubeVides().google_api_videos(api_key=keys.api_key)
+        GetYoutubeVides(api_key=keys.api_key).google_api_videos()
     else:
         print('Please register a valid API Key in DB')
         pass

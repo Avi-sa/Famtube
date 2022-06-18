@@ -23,10 +23,10 @@ class APIkey(models.Model):
     api_key = models.CharField(max_length=100)
     is_expired = models.BooleanField(default=False)
     added_on = models.DateTimeField(auto_now_add=True)
-    expired_on = models.DateTimeField(auto_now=True)
+    expired_on = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         app_label = "youtube"
 
     def __str__(self):
-        return self.api_key + " " + self.is_expired
+        return self.api_key + " " + str(self.is_expired)

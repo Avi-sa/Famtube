@@ -16,8 +16,8 @@ app.config_from_object(settings, namespace="CELERY")
 # Celery Beat Settings
 app.conf.beat_schedule = {
     "fetch-videos-10": {
-        # "task": "YouTube.tasks.GetVideos",
-        # "schedule": 30.0,
+        "task": "youtube.scheduled_task.fetch_yt_videos",
+        "schedule": 5.0,
     }
 }
 

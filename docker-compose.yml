@@ -1,39 +1,40 @@
 version: '3'
 
 services:
-  redis:
-    image: redis:latest
-    ports:
-      - 6379:6379
-    volumes:
-      - ./config/redis.conf:/redis.conf
-    command: [ "redis-server", "/redis.conf" ]
   web:
-    build: .
-    command: >
-      sh -c "python3 manage.py makemigrations &&
-             python3 manage.py migrate &&
-             python3 manage.py runserver 0.0.0.0:8000
-            "
-    environment:
-      - REDIS_HOST=redis
+    build:
+      context: .
     ports:
       - "8000:8000"
+    volumes:
+      - .:/app
+    command: >
+      sh -c "python3 manage.py makemigrations &&
+              python3 manage.py migrate &&
+             python3 manage.py runserver 0.0.0.0:8000"
+    env_file:
+      - .env
 
+  redis:
+    image: redis:alpine
   celery:
     build: .
-    command: celery -A Fampay worker -l info
+    command: >
+      sh -c "celery -A Fampay worker -l info
+             "
     volumes:
-      - ./:/usr/src/app/
+      - .:/app
     depends_on:
       - redis
       - db
 
   celery-beat:
     build: .
-    command: celery -A Fampay beat -l info
+    command: >
+      sh -c "celery -A Fampay beat -l info
+            "
     volumes:
-      - ./:/usr/src/app/
+      - .:/app
     depends_on:
       - redis
       - db

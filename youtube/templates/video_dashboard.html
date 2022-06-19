@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery</title>
+    <title>FamTube Video Gallery</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -13,7 +13,7 @@
 
     <style>
         .image-thumbail {
-            height: 165px;
+            height: 160px;
             object-fit: cover;
         }
 
@@ -44,9 +44,12 @@
         }
 
         input{
-            width:300px;
+            width:100%;
+            max-width: 300px;
             height:35px;
-            border-radius:50px;
+            border-radius:10px;
+            padding: 20px 20px;
+            border: 1px solid rgb(149, 147, 147);
         }
 
         .getAll{
@@ -66,43 +69,41 @@
     </style>
 </head>
 
-<body class="m-2">
+<body class="m-0">
 
     <div class="search-container">
     </div>
     <div class="container theme-showcase margin-top-navbar">
         <div class="row">
             <div class="col-md-3">
-                <div class="card" style="margin: 30px;">
-                    <b style="color:blue; align-self: center; size: 50px;">FamTube</b>
+                <div class="" style="margin-bottom: 24px; text-align: center;">
+                    <b style="color:blue; align-self: center; font-size: 1.6rem;">FamTube</b>
                 </div>
                 <form class="list-group list-group-flush" type="get" action="." >
-                    <input name="search_box" type="text" placeholder="Filter (Title, Description).."> 
-                    <button href="{% url 'videos' %}" class="btn btn-success btn-block btn-sm m-1">Search Video</button>
+                    <input class="form-control" name="search_box" type="text" placeholder="Filter (Title, Description).."> 
+                    <button href="{% url 'videos' %}" class="btn btn-outline-primary btn-block btn-sm mt-2">Search Video</button>
                 </form>
                 <form class="list-group list-group-flush" type="get" action="." style="margin-top: 20px;">
-                    <input name="duration" type="text" placeholder="Filter By max duration"> 
-                    <button href="{% url 'videos' %}" class="btn btn-primary btn-block btn-sm m-1">Max Duration Search</button>
+                    <input class="form-control" name="duration" type="text" placeholder="Filter By max duration"> 
+                    <button href="{% url 'videos' %}" class="btn btn-outline-primary btn-block btn-sm mt-2">Max Duration Search</button>
                 </form>
-                <div class="card">
-                    <div class="card-header">
-                        Videos
+                <div style="margin: 24px 0 0 7px;">
+                    Sort Videos by
+                </div>
+                <ul class="list-group list-group-flush">
+                    <a href="{% url 'videos' %}?order_by=-published_at" class="btn btn-primary btn-block btn-sm mt-1">Recent Publish Date</a>
+                    <a href="{% url 'videos' %}?order_by=published_at" class="btn btn-primary btn-block btn-sm mt-1">Sort By Publish Date</a>
+                    <a href="{% url 'videos' %}?order_by=title" class="btn btn-primary btn-block btn-sm mt-1">Sort By Title</a>
+                </ul>
+                
+                <div class="">
+                    <div style="margin: 24px 0 0 7px;">
+                        
                     </div>
                     <ul class="list-group list-group-flush">
-                        <a href="{% url 'videos' %}" class="btn btn-dark btn-block btn-sm m-1">All Videos</a>
+                        <a href="{% url 'videos' %}" class="btn btn-outline-success btn-block btn-sm mt-1">Show All Videos</a>
                     </ul>
                 </div>
-                <div class="card">
-                    <div class="card-header">
-                        Order videos
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <a href="{% url 'videos' %}?order_by=-published_at" class="btn btn-warning btn-block btn-sm m-1">Recent Publish Date</a>
-                        <a href="{% url 'videos' %}?order_by=title" class="btn btn-primary btn-block btn-sm m-1">Sort By Title</a>
-                        <a href="{% url 'videos' %}?order_by=published_at" class="btn btn-info btn-block btn-sm m-1">Sort By Publish Date</a>
-                    </ul>
-                </div>
-
             </div>
             <div class="col-md-9">
                 <div class="row">

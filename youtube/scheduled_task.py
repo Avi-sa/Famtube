@@ -87,7 +87,7 @@ def fetch_yt_videos(self):
             else:
                 break
     else:
-        print('Please register a valid API Key in DB')
+        print('*************************Please register a valid API Key in DB*********************')
         pass
 
 @shared_task(bind=True)

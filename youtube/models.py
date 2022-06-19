@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.db import models
+from django.utils.timezone import now
 
 # Create your models here.
 class YoutubeVideo(models.Model):
@@ -13,7 +14,7 @@ class YoutubeVideo(models.Model):
     thumbnail_urls = models.JSONField()
     duration = models.IntegerField(default=0, null=True, blank=True)
     channel_title = models.CharField(max_length=30)
-    published_at = models.DateTimeField(default=datetime.now())
+    published_at = models.DateTimeField(default=now)
     modified_at = models.DateTimeField(auto_now=True)
 
     class Meta:

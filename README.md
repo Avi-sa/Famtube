@@ -10,18 +10,28 @@ Ex 1: A video with title How to make tea? Match for the search query tea how.
 * Dashboard to Get All videos in paginated list with search and filter features.
 
 ## Installation
+* Copy secret keys from .env_template and create .env file in the same directory, Paste secret keys to it.
 ```
-    $ docker-compose --build
+    $ docker-compose build
     $ docker-compose up
 ```
 
 ### API TESTING
 
-* GET http://127.0.0.1:8000/famtube/videos/ ---> It returns list of all fetched videos sorted in order of published date.
+* GET http://127.0.0.1:8000/famtube/videos/
+- It returns list of all fetched videos sorted in order of published date (i.e. latest published video appears first in the list and old is last in the list.). The response is paginated and will be giving only 5 videos list in a single page response.
 
-* GET http://127.0.0.1:8000/famtube/videos/?search=cricket  ----> It returns the list of videos based on query parameter.
 
-* POST http://127.0.0.1:8000/famtube/set_key/ ----> It saves the API Key in DB for later use. 
+* GET http://127.0.0.1:8000/famtube/videos/?search=cricket
+- It returns the list of videos based on query parameter. Matches searched keyword with Title and Description of the videos and returns the list of videos if even single word matches. Page is 
 
-* http://127.0.0.1:8000/famtube/dashboard/ ----> Dashboard to see all videos along with filter and ordering feature.
+* POST http://127.0.0.1:8000/famtube/set_key/ 
+```
+body = {
+    'api_key' : 'some_valid_api_key'
+}
+```
+- It saves the API Key in DB for use in case if API KEY expired because of high request. It fetches the API_KEY from the db for use. It takes api_key and saves it in DB.
 
+* http://127.0.0.1:8000/famtube/dashboard/ 
+- Dashboard to list all the videos in a paginated dashboard. User can filter by title, description or duration. Duration filter returns all the videos which are smaller than entered length of the videos. On video click it redirects to youtube link of the particular video.

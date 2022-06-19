@@ -6,14 +6,13 @@ from isodate import parse_duration
 from youtube.models import APIkey, YoutubeVideo
 from decouple import config
 
-API_KEY = config('API_KEY')
 
+# API_KEY = config('API_KEY')
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 PREDEFINED_QUERY = "Cricket"
 
-# API_KEY = "AIzaSyBkIua0rxsm_3eCD-CM5JKKDsq8el86rPg"
-
+# Class to store videos in DB.
 class GetYoutubeVides:
     def __init__(self, api_key):
         self.famtube = build(YOUTUBE_API_SERVICE_NAME, 
@@ -28,6 +27,7 @@ class GetYoutubeVides:
                 ).execute()
         return search_result
 
+    # Function to save videos based on search Parameter.
     def google_api_videos(self, search=PREDEFINED_QUERY):
         items_list = []
         try:
@@ -36,7 +36,8 @@ class GetYoutubeVides:
                 search_result = self.youtube_search(search, nextToken)
                 nextToken = search_result.get('nextPageToken')
                 items_list.extend(search_result.get('items', []))
-        except Exception:
+        except Exception as E:
+            print('Inside exception', E)
             return False
         videos_ids = list()
         if items_list:
@@ -68,16 +69,19 @@ class GetYoutubeVides:
             return True
         return False
 
+
+# Shared task that runs in each 60 seconds and stores data in DB.
 @shared_task(bind=True)
 def fetch_yt_videos(self):
     from youtube.models import APIkey
+    from django.utils import timezone
     keys = APIkey.objects.filter(is_expired=False).order_by('added_on')
     if keys:
         for i in range(keys.count()):
             featched_videos = GetYoutubeVides(api_key=keys[i].api_key).google_api_videos()
             if not featched_videos:
                 api_obj = APIkey.objects.get(api_key=keys[i].api_key)
-                api_obj.expired_on = datetime.now()
+                api_obj.expired_on = datetime.now(tz=timezone.utc)
                 api_obj.is_expired = True
                 api_obj.save()
             else:

@@ -7,38 +7,55 @@
 * Basic html, css to build dashboard.
 
 ## Key Features
-* Fetch videos from youtube in each 30 second interval and store in Database.
-* Get Api for paginated response of videos sorted in descending time of publish time.
-* A search api to search api from stored db. It's able to search videos containing partial match for the search query in either video title or description.
+* Fetch videos from youtube in each 60 second interval and store in Database.
+* Get Api for paginated response of videos sorted in descending order of publish time.
+* A search api to search from stored db. It's able to search videos containing partial match for the search query in either video title or description.
 Ex 1: A video with title How to make tea? Match for the search query tea how.
-* API to add new api keys(New API Key will be automatically used once old expires).
-* Dashboard to Get All videos in paginated list with search and filter features.
+* API to add new api keys(New API Keys will be automatically used once old expires).
+* Dashboard to Get All videos in paginated list with sorting and filtering options. Search can be done by title, description or duration of video.
 
 ## Installation
-* Copy secret keys from .env_template and create .env file in the same directory, Paste secret keys to it.
+ Copy secret keys from .env_template and create .env file in the same directory, Paste secret keys to it.
+```
+    $ cp .env_template .env
+```
+* Add a new api key to get videos using set_key post API. It takes api_key as body parameter for post API.
+```
+curl --location --request POST 'http://127.0.0.1:8000/famtube/set_key/' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "api_key": "AIzaSyBd6WBdFPIxODQAVaJ7PRmwgqF-cW8VyH0"
+}'
+
+```
+*
 ```
     $ docker-compose build
     $ docker-compose up
 ```
+- If celery beat don't start because of periodic task. Use the same command $ docker-compose up again. It works.
+## API TESTING
 
-### API TESTING
-
-* GET http://127.0.0.1:8000/famtube/videos/
-- It returns list of all fetched videos sorted in order of published date (i.e. latest published video appears first in the list and old is last in the list.). The response is paginated and will be giving only 5 videos list in a single page response.
+#### GET http://127.0.0.1:8000/famtube/videos/
+* It returns list of all fetched videos sorted in order of published date (i.e. latest published video appears first in the list and old is last in the list.). The response is paginated and will be giving only 5 videos list in a single page response.
 
 
-* GET http://127.0.0.1:8000/famtube/videos/?search=cricket
-- It returns the list of videos based on query parameter. Matches searched keyword with Title and Description of the videos and returns the list of videos if even single word matches. Page is 
+#### GET http://127.0.0.1:8000/famtube/videos/?search=cricket
+* It returns paginated list of videos based on query parameter. Matches searched keyword with Title and Description of the videos and returns the list of videos if even single word matches. 
 
-* POST http://127.0.0.1:8000/famtube/set_key/ 
+#### POST http://127.0.0.1:8000/famtube/set_key/ 
+
+* API Curl ->
 ```
-body = {
-    'api_key' : 'some_valid_api_key'
-}
+curl --location --request POST 'http://127.0.0.1:8000/famtube/set_key/' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "api_key": "AIzaSyBd6WBdFPIxODQAVaJ7PRmwgqF-cW8VyH0"
+}'
 ```
-- It saves the API Key in DB for use in case if API KEY expired because of high request. It fetches the API_KEY from the db for use. It takes api_key and saves it in DB.
+* It saves the API Key in DB for use in case if API KEY expired because of too many request. These api keys are fetched later when a api_key is expired. It takes api_key and saves it in DB.
 
-* http://127.0.0.1:8000/famtube/dashboard/ 
-- Dashboard to list all the videos in a paginated dashboard. User can filter by title, description or duration. Duration filter returns all the videos which are smaller than entered length of the videos. On video click it redirects to youtube link of the particular video.
+#### http://127.0.0.1:8000/famtube/dashboard/ 
+* Dashboard to list all the videos in a paginated dashboard. User can filter by title, description or duration. Duration filter returns all the videos which are smaller than entered length of the videos. On video click it redirects to youtube link of the particular video. 
 
 

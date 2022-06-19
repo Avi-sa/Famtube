@@ -1,6 +1,9 @@
+from audioop import reverse
 from lib2to3.pytree import Base
+from django.forms import ValidationError
+from django.http import HttpResponseRedirect
 from django.http.response import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from rest_framework.views import APIView
 from rest_framework.pagination import LimitOffsetPagination
 from youtube.models import YoutubeVideo
@@ -66,9 +69,12 @@ def fetchData(request):
     if search:
         videoData = videoData.order_by(search)
     if duration:
-        duration = int(duration.strip())
+        try:
+            duration = int(duration.strip())
+        except Exception:
+            return HttpResponse('Please enter a valid duration')
         if duration:
-            videoData = videoData.filter(duration__lte=int(duration))
+            videoData = videoData.filter(duration__lte=(duration))
     if search_param:
         search_param = search_param.lower().split(' ')
         word_list = list()
@@ -82,6 +88,12 @@ def fetchData(request):
         videoData = videoData.exclude(video_id__in = exclude_list)
     paginator = Paginator(videoData, 9)
     page = request.GET.get('page', 1)
+    if not search and not search_param and not duration and page:
+        prev_page = request.META.get('HTTP_REFERER', None)
+        if prev_page and ('duration' in prev_page or 'search_param' in prev_page):
+            if 'page' in prev_page:
+                prev_page = prev_page.split('&')[0]
+            return HttpResponseRedirect(prev_page+'&page='+str(page))
     try:
         videos = paginator.page(page)
     except PageNotAnInteger:

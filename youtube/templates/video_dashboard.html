@@ -13,7 +13,7 @@
 
     <style>
         .image-thumbail {
-            height: 130px;
+            height: 165px;
             object-fit: cover;
         }
 
@@ -66,27 +66,27 @@
     </style>
 </head>
 
-<body class="m-5">
+<body class="m-2">
 
     <div class="search-container">
-        <form type="get" action="." style="margin: 10">
-            <input name="search_box" type="text" placeholder="Filter (Title, Description).."> 
-            <button href="{% url 'videos' %}"><i class="fa fa-search fa-lg"></i></button>
-        </form>
-        <form type="get" action="." style="margin-left: 60px">
-            <input name="duration" type="text" placeholder="Filter By max duration"> 
-            <button href="{% url 'videos' %}"><i class="fa fa-search fa-lg"></i></button>
-        </form>
     </div>
     <div class="container theme-showcase margin-top-navbar">
         <div class="row">
             <div class="col-md-3">
-                <div class="card">
+                <div class="card" style="margin: 30px;">
                     <b style="color:blue; align-self: center; size: 50px;">FamTube</b>
                 </div>
+                <form class="list-group list-group-flush" type="get" action="." >
+                    <input name="search_box" type="text" placeholder="Filter (Title, Description).."> 
+                    <button href="{% url 'videos' %}" class="btn btn-success btn-block btn-sm m-1">Search Video</button>
+                </form>
+                <form class="list-group list-group-flush" type="get" action="." style="margin-top: 20px;">
+                    <input name="duration" type="text" placeholder="Filter By max duration"> 
+                    <button href="{% url 'videos' %}" class="btn btn-primary btn-block btn-sm m-1">Max Duration Search</button>
+                </form>
                 <div class="card">
                     <div class="card-header">
-                        Video
+                        Videos
                     </div>
                     <ul class="list-group list-group-flush">
                         <a href="{% url 'videos' %}" class="btn btn-dark btn-block btn-sm m-1">All Videos</a>
@@ -120,7 +120,7 @@
                         </div>
                     </div>
                     {% empty %}
-                    <h3>No photos...</h3>
+                    <h3>No Videos...</h3>
                     {% endfor %}
                 </div>
                 {% if videos.has_other_pages %}

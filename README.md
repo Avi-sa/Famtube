@@ -1,5 +1,10 @@
 # Famtube
-* API to fetch latest videos sorted in reverse chronological order of their publishing date-time from YouTube for a given tag/search query in a paginated response.
+* Application to fetch latest videos sorted in reverse chronological order of their publishing date-time from YouTube for a given tag/search query in a paginated response.
+### Tech Used
+* Django and DRF for creating api's and views.
+* Celery, Celery Beat and Redis for asynchronous background task.
+* Docker to containerize the application.
+* Basic html, css to build dashboard.
 
 ## Key Features
 * Fetch videos from youtube in each 30 second interval and store in Database.
@@ -35,3 +40,5 @@ body = {
 
 * http://127.0.0.1:8000/famtube/dashboard/ 
 - Dashboard to list all the videos in a paginated dashboard. User can filter by title, description or duration. Duration filter returns all the videos which are smaller than entered length of the videos. On video click it redirects to youtube link of the particular video.
+
+

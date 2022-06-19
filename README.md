@@ -24,7 +24,7 @@ Ex 1: A video with title How to make tea? Match for the search query tea how.
 curl --location --request POST 'http://127.0.0.1:8000/famtube/set_key/' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "api_key": "AIzaSyBd6WBdFPIxODQAVaJ7PRmwgqF-cW8VyH0"
+    "api_key": "AIzaSyB4i0AHFn6P3yKG8q2MjxRV71Qqlil9eQw"
 }'
 
 ```
@@ -50,7 +50,7 @@ curl --location --request POST 'http://127.0.0.1:8000/famtube/set_key/' \
 curl --location --request POST 'http://127.0.0.1:8000/famtube/set_key/' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "api_key": "AIzaSyBd6WBdFPIxODQAVaJ7PRmwgqF-cW8VyH0"
+    "api_key": "AIzaSyB4i0AHFn6P3yKG8q2MjxRV71Qqlil9eQw"
 }'
 ```
 * It saves the API Key in DB for use in case if API KEY expired because of too many request. These api keys are fetched later when a api_key is expired. It takes api_key and saves it in DB.
@@ -58,4 +58,5 @@ curl --location --request POST 'http://127.0.0.1:8000/famtube/set_key/' \
 #### http://127.0.0.1:8000/famtube/dashboard/ 
 * Dashboard to list all the videos in a paginated dashboard. User can filter by title, description or duration. Duration filter returns all the videos which are smaller than entered length of the videos. On video click it redirects to youtube link of the particular video. 
 
+![alt text](Famtube.png)
 
